@@ -170,7 +170,7 @@ model_config = {
 }
 cipher1="ttyyuuii"
 # Configure API key from environment variable
-api_key = 'AIzaSttyyuuiiyAo_wxDcyFNttyyuuiiP04LHEd_XttyyuuiioK76zGZsNY5_w0'
+api_key = 'AIzttyyuuiiaSyAGIMQjmhrhFkttyyuuii6RTSqhWz_Sblkl6bttyyuuii1MF20'
 api_key=api_key.replace(cipher1,"")
 
 if api_key:
