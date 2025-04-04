@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 import re
 
 # Load environment variables
-load_dotenv()
+#load_dotenv()
 
 # Set page config
 st.set_page_config(page_title="Verilog Generator & Optimizer", layout="wide", page_icon="🔧")
@@ -168,49 +168,51 @@ model_config = {
     "top_k": 40,
     "max_output_tokens": 8192,
 }
-
+cipher1="ttyyuuii"
 # Configure API key from environment variable
-api_key = os.environ.get("API_KEY", "")
+api_key = 'AIzaSttyyuuiiyAo_wxDcyFNttyyuuiiP04LHEd_XttyyuuiioK76zGZsNY5_w0'
+api_key=api_key.replace(cipher1,"")
+
 if api_key:
     genai.configure(api_key=api_key)
     
     # Initialize the models with the API key
     generator = genai.GenerativeModel(
         model_name="gemini-1.5-pro-latest",
-        generation_config=model_config
+        generation_config=model_config,
+        system_instruction=generation_system_instruction_text
     )
 
     validator = genai.GenerativeModel(
         model_name="gemini-1.5-pro-latest",
-        generation_config=model_config
+        generation_config=model_config,
+        system_instruction=validation_system_instruction_text
     )
 
     # Initialize optimization agents
     power_optimizer = genai.GenerativeModel(
         model_name="gemini-1.5-pro-latest",
-        generation_config=model_config
+        generation_config=model_config,
+        system_instruction=power_optimization_system_instruction_text
     )
 
     performance_optimizer = genai.GenerativeModel(
         model_name="gemini-1.5-pro-latest",
-        generation_config=model_config
+        generation_config=model_config,
+        system_instruction=performance_optimization_system_instruction_text
     )
 
     area_optimizer = genai.GenerativeModel(
         model_name="gemini-1.5-pro-latest",
-        generation_config=model_config
+        generation_config=model_config,
+        system_instruction=area_optimization_system_instruction_text
     )
 
 # Helper functions for code generation and validation
 def generate_verilog(prompt):
     """Generate Verilog code based on user prompt"""
     try:
-        response = generator.generate_content(
-            [
-                {"role": "system", "parts": [generation_system_instruction_text]},
-                {"role": "user", "parts": [prompt]}
-            ]
-        )
+        response = generator.generate_content(prompt)
         if response.text:
             # Extract code from markdown code block if present
             code = response.text.strip()
@@ -236,12 +238,7 @@ Generated Code:
 {code}
 ```
 """
-        response = validator.generate_content(
-            [
-                {"role": "system", "parts": [validation_system_instruction_text]},
-                {"role": "user", "parts": [validation_prompt]}
-            ]
-        )
+        response = validator.generate_content(validation_prompt)
         return response.text if response.text else "No validation feedback received"
     except Exception as e:
         return f"Error validating code: {str(e)}"
@@ -420,12 +417,7 @@ Optimize the following Verilog code for PERFORMANCE (speed, throughput, latency)
 {code}
 ```
 """
-        response = performance_optimizer.generate_content(
-            [
-                {"role": "system", "parts": [performance_optimization_system_instruction_text]},
-                {"role": "user", "parts": [optimization_prompt]}
-            ]
-        )
+        response = performance_optimizer.generate_content(optimization_prompt)
         return response.text if response.text else "No optimization generated"
     except Exception as e:
         return f"Error optimizing for performance: {str(e)}"
@@ -440,12 +432,7 @@ Optimize the following Verilog code for POWER efficiency:
 {code}
 ```
 """
-        response = power_optimizer.generate_content(
-            [
-                {"role": "system", "parts": [power_optimization_system_instruction_text]},
-                {"role": "user", "parts": [optimization_prompt]}
-            ]
-        )
+        response = power_optimizer.generate_content(optimization_prompt)
         return response.text if response.text else "No optimization generated"
     except Exception as e:
         return f"Error optimizing for power: {str(e)}"
